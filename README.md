@@ -20,7 +20,7 @@ POST /match
 
 - RESPONSE
 ```
-{
+[{
 	"winner": 1,
 	"points": [3,12]
 	"matchs": [
@@ -72,5 +72,5 @@ POST /match
 			]
 		}
 	]
-}
+}]
 ```
