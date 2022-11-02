@@ -5,6 +5,7 @@ Backend para o jogo de truco da matéria de PIN3
 # Endpoints:
 POST /match
 - REQUEST:
+```
 [
     {
         "id": 1,
@@ -15,9 +16,10 @@ POST /match
         "algorithm": "BASELINE1"
     }
 ]
-
+```
 
 - RESPONSE
+```
 {
 	"winner": 1,
 	"points": [3,12]
@@ -68,3 +70,4 @@ POST /match
 		}
 	]
 }
+```
