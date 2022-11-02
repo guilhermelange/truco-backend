@@ -25,7 +25,7 @@ POST /match
 	"points": [3,12]
 	"matchs": [
 		{
-			"manilha": "2_COPAS",
+			"joker": "2_COPAS",
 			"winner": 2,
 			"points": 3,
 			"player1": [
@@ -38,33 +38,36 @@ POST /match
 				"2_COPAS",
 				"2_COPAS"
 			],
-			"jogadas": [
+			"plays": [
 				{
 					"type": "PLAY",
 					"card": "2_COPAS",
-					"ponto": 1
+					"point": 1
 				},
 				{
 					"type": "PLAY",
 					"card": "2_COPAS",
-					"ponto": 1
+					"point": 1
 				},
 				{
 					"type": "PLAY",
 					"card": "2_COPAS",
-					"ponto": 1
+					"point": 1
 				},
 				{
 					"type": "TRUCO",
-					"user": 1
+					"user": 1,
+					"point": 1
 				},
 				{
 					"type": "ACCEPT",
-					"user": 2
+					"user": 2,
+					"point": 3
 				},
 				{
 					"type": "RUN",
-					"user": 1
+					"user": 1,
+					"point": 3
 				}
 			]
 		}
