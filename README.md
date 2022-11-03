@@ -42,21 +42,24 @@ POST /match
 				{
 					"type": "PLAY",
 					"card": "2_COPAS",
+					"player": 0,
 					"point": 1
 				},
 				{
 					"type": "PLAY",
 					"card": "2_COPAS",
+					"player": 1,
 					"point": 1
 				},
 				{
 					"type": "PLAY",
 					"card": "2_COPAS",
+					"player": 1,
 					"point": 1
 				},
 				{
 					"type": "TRUCO",
-					"user": 1,
+					"player": 1,
 					"point": 1
 				},
 				{
@@ -67,6 +70,11 @@ POST /match
 				{
 					"type": "RUN",
 					"user": 1,
+					"point": 3
+				},
+				{
+					"type": "WIN",
+					"user": 2,
 					"point": 3
 				}
 			]
