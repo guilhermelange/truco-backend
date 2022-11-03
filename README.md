@@ -82,3 +82,21 @@ POST /match
 	]
 }]
 ```
+
+CURL
+```
+curl --request POST \
+  --url http://127.0.0.1:5000/match \
+  --header 'Content-Type: application/json' \
+  --data '[
+    {
+        "id": 1,
+        "algorithm": "RANDOM"
+    },
+    {
+        "id": 2,
+        "algorithm": "RANDOM"
+    }
+]'
+
+```
