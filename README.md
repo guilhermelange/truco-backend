@@ -64,17 +64,17 @@ POST /match
 				},
 				{
 					"type": "ACCEPT",
-					"user": 2,
+					"player": 2,
 					"point": 3
 				},
 				{
 					"type": "RUN",
-					"user": 1,
+					"player": 1,
 					"point": 3
 				},
 				{
 					"type": "WIN",
-					"user": 2,
+					"player": 2,
 					"point": 3
 				}
 			]
