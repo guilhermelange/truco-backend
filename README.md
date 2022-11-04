@@ -100,3 +100,7 @@ curl --request POST \
 ]'
 
 ```
+
+## Deploy
+
+Para o deploy, deve-se utilizar implementação WSGI `mod_wsgi` (https://pypi.org/project/mod-wsgi/), usar servidor do flask apenas para desenvolvimento.
