@@ -1,4 +1,5 @@
-import random, uuid
+import random
+import uuid
 from abc import abstractmethod
 
 realizedMatches = []
@@ -75,8 +76,6 @@ class Algoritmo:
         self.game = game
 
 # Classe que representa uma "Rodada" da partida, constituida por 3 jogadas de cada player
-
-
 class Game:
     def __init__(self, algoritmoA: Algoritmo, algoritmoB: Algoritmo):
         self.algoritmoA = algoritmoA
@@ -98,7 +97,7 @@ class Game:
         self.algoritmoA.setGame(self)
         self.algoritmoB.setGame(self)
 
-    #Joga um game, constituido de 3 rodadas
+    # Joga um game, constituido de 3 rodadas
     def play(self):
         turn = random.randint(0, 1)
         jogadas = []
@@ -106,7 +105,6 @@ class Game:
 
         # realiza as rodadas
         for i in range(3):
-            print(i)
             if not run:
                 if turn == 1:
                     jogadaA = self.algoritmoA.getJogada()
@@ -122,7 +120,7 @@ class Game:
                     jogadas.append(jogadaA)
                     turn = 1
 
-                #No proximo turno, quem joga é quem ganhou o último
+                # No proximo turno, quem joga é quem ganhou o último
                 if 'card' in jogadaA and 'card' in jogadaB and not self.cardEquals(jogadaA['card'], jogadaB['card']):
                     if self.cardWins(jogadaA['card'], jogadaB['card']):
                         turn = 1
@@ -138,28 +136,39 @@ class Game:
             if index % 2 == 0 and index < len(jogadas) - 1:
                 jogadaA = jogada
                 jogadaB = jogadas[index + 1]
-                if self.cardWins(jogadaA['card'], jogadaB['card']):
+
+                if jogadaB['type'] == 'RUN':
                     counts.append(jogadaA['player'])
-                else:
+                elif jogadaA['type'] == 'RUN':
                     counts.append(jogadaB['player'])
+                else:
+                    if 'card' in jogadaA and 'card' in jogadaB:
+                        if self.cardWins(jogadaA['card'], jogadaB['card']):
+                            counts.append(jogadaA['player'])
+                        else:
+                            counts.append(jogadaB['player'])
 
         # Ganhou com truco
         if any(jogada['type'] == 'TRUCO' for jogada in jogadas) and any(jogada['type'] == 'ACCEPT' for jogada in jogadas):
             if counts.count(self.algoritmoA.id) > counts.count(self.algoritmoB.id):
                 jogadas.append(
                     {'type': 'WIN', 'player': self.algoritmoA.id, 'points': 3})
+                self.winner = self.algoritmoA.id
             else:
                 jogadas.append(
                     {'type': 'WIN', 'player': self.algoritmoB.id, 'points': 3})
-
-        if any(jogada['type'] == 'RUN' for jogada in jogadas):
+                self.winner = self.algoritmoB.id
+        #Correu
+        elif any(jogada['type'] == 'RUN' for jogada in jogadas):
             jog = next(jogada for jogada in jogadas if jogada['type'] == 'RUN')
-            if jog['id'] == self.algoritmoA.id:
+            if jog['player'] == self.algoritmoA.id:
                 jogadas.append(
                     {'type': 'WIN', 'player': self.algoritmoB.id, 'points': 1})
+                self.winner = self.algoritmoB.id
             else:
                 jogadas.append(
                     {'type': 'WIN', 'player': self.algoritmoA.id, 'points': 1})
+                self.winner = self.algoritmoA.id
 
         # Conta jogo ganho normal (quem ganhou mais rodadas)
         elif counts.count(self.algoritmoA.id) > counts.count(self.algoritmoB.id):
@@ -175,7 +184,7 @@ class Game:
 
         return jogadas
 
-    #Verica se a carta A ganha da carta B
+    # Verica se a carta A ganha da carta B
     def cardWins(self, cartaA, cartaB):
         powerOrderNumbers = ['4', '5', '6', '7',
                              '10', '11', '12', '1', '2', '3']
@@ -193,19 +202,20 @@ class Game:
 
         return powerOrderNumbers.index(numeroA) > powerOrderNumbers.index(numeroB)
 
-    #verifica se as cartas "Empaxam"
+    # verifica se as cartas "Empaxam"
     def cardEquals(self, cartaA, cartaB):
         numeroA = cartaA.split('_')[0]
         numeroB = cartaB.split('_')[0]
         numeroManilha = self.deck.getManilha().split('_')[0]
         return numeroA == numeroB and numeroA != numeroManilha and numeroB != numeroManilha
 
+
 class Match:
     def __init__(self, algoritmoA: Algoritmo, algoritmoB: Algoritmo):
         self.algoritmoA = algoritmoA
         self.algoritmoB = algoritmoB
 
-    #Joga uma partida, realizando games até que alguem atinja a pontuação final de 12 pontos
+    # Joga uma partida, realizando games até que alguem atinja a pontuação final de 12 pontos
     def playMatch(self):
         totalPoints = 0
         pointsA = 0
