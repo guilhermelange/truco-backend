@@ -172,8 +172,6 @@ class Game:
             else:
                 return True
 
-        # verificar "empachada"
-
         return powerOrderNumbers.index(numeroA) > powerOrderNumbers.index(numeroB)
 
 
