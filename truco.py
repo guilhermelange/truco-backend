@@ -30,11 +30,14 @@ class Deck:
 
 
 class Algoritmo:
+
+    hand: list
+
     def __init__(self, id):
         self.id = id
 
     @abstractmethod
-    def getJogada(self, cartaAdversario=None):
+    def getJogada(self, jogadaAdversario=None):
         # return(carta, truco)
         pass
 
@@ -54,6 +57,9 @@ class Algoritmo:
     def run(self):
         return {"type": "RUN", "player": self.id}
 
+    def popCarta(self, carta):
+        return self.hand.pop(self.hand.index(carta))
+
     def setHand(self, hand):
         self.hand = hand
 
@@ -63,8 +69,8 @@ class Algoritmo:
     def setManilha(self, manilha):
         self.manilha = manilha
 
-    def setPartida(self, partida):
-        self.partida = partida
+    def setGame(self, game):
+        self.game = game
 
 # Classe que representa uma "Rodada" da partida, constituida por 3 jogadas de cada player
 
@@ -87,8 +93,8 @@ class Game:
         self.algoritmoB.setHandAdversario(self.handA)
         self.algoritmoB.setManilha(self.manilha)
 
-        self.algoritmoA.setPartida(self)
-        self.algoritmoB.setPartida(self)
+        self.algoritmoA.setGame(self)
+        self.algoritmoB.setGame(self)
 
     def play(self):
         turn = random.randint(0, 1)
@@ -100,13 +106,13 @@ class Game:
             if not run:
                 if turn == 1:
                     jogadaA = self.algoritmoA.getJogada()
-                    jogadaB = self.algoritmoB.getJogada(jogadaA['card'])
+                    jogadaB = self.algoritmoB.getJogada(jogadaA)
                     jogadas.append(jogadaA)
                     jogadas.append(jogadaB)
                     turn = 0
                 else:
                     jogadaB = self.algoritmoB.getJogada()
-                    jogadaA = self.algoritmoA.getJogada(jogadaB['card'])
+                    jogadaA = self.algoritmoA.getJogada(jogadaB)
                     jogadas.append(jogadaB)
                     jogadas.append(jogadaA)
                     turn = 1

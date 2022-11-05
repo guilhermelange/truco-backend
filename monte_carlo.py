@@ -1,7 +1,11 @@
-from truco import Algoritmo
+from truco import Algoritmo, Game
 
 class AlogritmoMonteCarloTreeSearch(Algoritmo):
+
+    #apenas para o autocomplete
+    game: Game
     
-    def getJogada(self, cartaAdversario=None):
+    def getJogada(self, jogadaAdversario=None):
+        print(self.game.deck)
         pass
     

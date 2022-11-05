@@ -1,5 +1,9 @@
-from truco import Algoritmo
+from truco import Algoritmo, Game
 
 class AlgoritmoBaseline(Algoritmo):
-    def getJogada(self, cartaAdversario=None):
+
+    #apenas para o autocomplete
+    game: Game
+
+    def getJogada(self, jogadaAdversario=None):
         pass
