@@ -1,5 +1,7 @@
-import random
+import random, uuid
 from abc import abstractmethod
+
+realizedMatches = []
 
 
 class Deck:
@@ -96,6 +98,7 @@ class Game:
         self.algoritmoA.setGame(self)
         self.algoritmoB.setGame(self)
 
+    #Joga um game, constituido de 3 rodadas
     def play(self):
         turn = random.randint(0, 1)
         jogadas = []
@@ -103,6 +106,7 @@ class Game:
 
         # realiza as rodadas
         for i in range(3):
+            print(i)
             if not run:
                 if turn == 1:
                     jogadaA = self.algoritmoA.getJogada()
@@ -110,12 +114,20 @@ class Game:
                     jogadas.append(jogadaA)
                     jogadas.append(jogadaB)
                     turn = 0
+
                 else:
                     jogadaB = self.algoritmoB.getJogada()
                     jogadaA = self.algoritmoA.getJogada(jogadaB)
                     jogadas.append(jogadaB)
                     jogadas.append(jogadaA)
                     turn = 1
+
+                #No proximo turno, quem joga é quem ganhou o último
+                if 'card' in jogadaA and 'card' in jogadaB and not self.cardEquals(jogadaA['card'], jogadaB['card']):
+                    if self.cardWins(jogadaA['card'], jogadaB['card']):
+                        turn = 1
+                    else:
+                        turn = 0
 
                 run = jogadaA['type'] == 'RUN' or jogadaB['type'] == 'RUN'
 
@@ -163,6 +175,7 @@ class Game:
 
         return jogadas
 
+    #Verica se a carta A ganha da carta B
     def cardWins(self, cartaA, cartaB):
         powerOrderNumbers = ['4', '5', '6', '7',
                              '10', '11', '12', '1', '2', '3']
@@ -180,12 +193,19 @@ class Game:
 
         return powerOrderNumbers.index(numeroA) > powerOrderNumbers.index(numeroB)
 
+    #verifica se as cartas "Empaxam"
+    def cardEquals(self, cartaA, cartaB):
+        numeroA = cartaA.split('_')[0]
+        numeroB = cartaB.split('_')[0]
+        numeroManilha = self.deck.getManilha().split('_')[0]
+        return numeroA == numeroB and numeroA != numeroManilha and numeroB != numeroManilha
 
 class Match:
     def __init__(self, algoritmoA: Algoritmo, algoritmoB: Algoritmo):
         self.algoritmoA = algoritmoA
         self.algoritmoB = algoritmoB
 
+    #Joga uma partida, realizando games até que alguem atinja a pontuação final de 12 pontos
     def playMatch(self):
         totalPoints = 0
         pointsA = 0
@@ -200,7 +220,7 @@ class Match:
             totalPoints = totalPoints + game.totalPoints
             mtch = {'joker': game.manilha,
                     'winner': game.winner,
-                    'match_id': '123',
+                    'match_id': str(uuid.uuid4())[0:8],
                     'points': game.totalPoints,
                     'player_1': handA,
                     'player_2': handB,
@@ -218,6 +238,9 @@ class Match:
         else:
             winner = self.algoritmoB.id
 
-        return {'winner': winner,
-                "points": [pointsA, pointsB],
-                "matches": matches}
+        mt = {'winner': winner,
+              "points": [pointsA, pointsB],
+              "matches": matches}
+
+        realizedMatches.append(mt)
+        return mt
