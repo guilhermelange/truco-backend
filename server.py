@@ -7,7 +7,6 @@ from baseline import AlgoritmoBaseline
 
 app = Flask(__name__)
 
-
 @app.post('/match')
 def match_post_route():
     data = json.loads(request.data)

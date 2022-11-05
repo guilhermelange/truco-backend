@@ -1,2 +1,4 @@
 flask==2.2.2
 autopep8==2.0.0
+pydash==5.1.1
+matplotlib==3.6.2
