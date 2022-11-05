@@ -5,9 +5,8 @@ Backend para o jogo de truco da matéria de PIN3
 
 1. Criar virtual environment com ```python -m venv env```
 2. Ativar o virtual environment rodando o script `env/Scripts/Activate.ps1` no powerShell
-3. instalar flask com ```pip install flask```
-4. (Opcional) instalar o identador autopep8 com ```pip install autopep8```
-5. rodar ```flask --app server run``` no terminal para iniciar o server de desenvolvimento
+3. instalar dependências com ```pip install -r .\requirements.txt```
+4. rodar ```flask --app server run``` no terminal para iniciar o server de desenvolvimento
 
 # Endpoints:
 POST /match
