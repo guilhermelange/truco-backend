@@ -28,3 +28,6 @@ def getAlgorithm(algorithm):
         return AlgoritmoBaseline(algorithm['id'])
     else:
         return AlogritmoMonteCarloTreeSearch(algorithm['id'])
+
+if __name__ == '__main__':
+    app.run()
