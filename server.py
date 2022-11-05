@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 import json
 from truco import Match
 from randomico import AlgoritmoRandomico
@@ -6,8 +7,10 @@ from monte_carlo import AlogritmoMonteCarloTreeSearch
 from baseline import AlgoritmoBaseline
 
 app = Flask(__name__)
+CORS(app)
 
 @app.post('/match')
+@cross_origin(supports_credentials=True)
 def match_post_route():
     data = json.loads(request.data)
     return jsonify(runMatch(data[0], data[1]))
