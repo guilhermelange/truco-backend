@@ -101,6 +101,11 @@ curl --request POST \
 
 ```
 
-## Deploy
+## SETUP
 
-Para o deploy, deve-se utilizar implementação WSGI `mod_wsgi` (https://pypi.org/project/mod-wsgi/), usar servidor do flask apenas para desenvolvimento.
+1. Criar env do python com ```python -m venv env```
+2. Ativar o virtual_envoroment rodando o env/Scripts/Activate.ps1 no powerShell
+3. instalar flask com ```pip install flask```
+4. (Opcional) instalar o identador autopep8 com ```pip install autopep8```
+5. rodar ```flask --app server run``` no terminal para iniciar o server de desenvolvimento
+
