@@ -1,6 +1,13 @@
 # Truco Backend
 Backend para o jogo de truco da matéria de PIN3
 
+# Setup do projeto
+
+1. Criar env do python com ```python -m venv env```
+2. Ativar o virtual_envoroment rodando o env/Scripts/Activate.ps1 no powerShell
+3. instalar flask com ```pip install flask```
+4. (Opcional) instalar o identador autopep8 com ```pip install autopep8```
+5. rodar ```flask --app server run``` no terminal para iniciar o server de desenvolvimento
 
 # Endpoints:
 POST /match
@@ -101,11 +108,4 @@ curl --request POST \
 
 ```
 
-## SETUP
-
-1. Criar env do python com ```python -m venv env```
-2. Ativar o virtual_envoroment rodando o env/Scripts/Activate.ps1 no powerShell
-3. instalar flask com ```pip install flask```
-4. (Opcional) instalar o identador autopep8 com ```pip install autopep8```
-5. rodar ```flask --app server run``` no terminal para iniciar o server de desenvolvimento
 
