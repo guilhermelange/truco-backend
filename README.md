@@ -7,7 +7,7 @@ Backend para o jogo de truco da matéria de PIN3
 2. Ativar o virtual environment rodando o script `env/Scripts/Activate.ps1` no powerShell
 3. instalar dependências com ```pip install -r .\requirements.txt```
 4. rodar ```flask --app server run``` no terminal para iniciar o server de desenvolvimento
-
+5. Endpoint: https://truco-server.vercel.app/match
 # Endpoints:
 POST /match
 ### REQUEST:
