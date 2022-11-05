@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import json
-from model import AlgoritmoRandomico, Match
+from truco import Match
+from randomico import AlgoritmoRandomico
 
 app = Flask(__name__)
 

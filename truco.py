@@ -215,10 +215,3 @@ class Match:
         return {'winner': winner,
                 "points": [pointsA, pointsB],
                 "matches": matches}
-
-
-class AlgoritmoRandomico(Algoritmo):
-
-    def getJogada(self, cartaAdversario=None):
-        return self.play(self.hand.pop(random.randint(0,  len(self.hand) - 1)))
-
