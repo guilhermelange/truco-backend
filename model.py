@@ -111,7 +111,7 @@ class Game:
                     jogadas.append(jogadaA)
                     turn = 1
 
-                    run = jogadaA['type'] == 'RUN' or jogadaB['type'] == 'RUN'
+                run = jogadaA['type'] == 'RUN' or jogadaB['type'] == 'RUN'
 
         # conta rodadas ganhas
         counts = []
@@ -196,6 +196,7 @@ class Match:
             totalPoints = totalPoints + game.totalPoints
             mtch = {'joker': game.manilha,
                     'winner': game.winner,
+                    'match_id': '123',
                     'points': game.totalPoints,
                     'player_1': handA,
                     'player_2': handB,
@@ -222,3 +223,4 @@ class AlgoritmoRandomico(Algoritmo):
 
     def getJogada(self, cartaAdversario=None):
         return self.play(self.hand.pop(random.randint(0,  len(self.hand) - 1)))
+
