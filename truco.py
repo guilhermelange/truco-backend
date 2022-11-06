@@ -108,20 +108,27 @@ class Game:
         jogadas = []
         run = False
 
+        #TODO Necessário tratar empachada
         # realiza as rodadas
         for i in range(3):
             if not run:
                 if turn == 1:
                     jogadaA = self.algoritmoA.getJogada()
-                    jogadaB = self.algoritmoB.getJogada(jogadaA)
                     jogadas.append(jogadaA)
+                    if jogadaA['type'] == 'RUN':
+                        run = True
+                        break
+                    jogadaB = self.algoritmoB.getJogada(jogadaA)
                     jogadas.append(jogadaB)
                     turn = 0
 
                 else:
                     jogadaB = self.algoritmoB.getJogada()
-                    jogadaA = self.algoritmoA.getJogada(jogadaB)
                     jogadas.append(jogadaB)
+                    if jogadaB['type'] == 'RUN':
+                        run = True
+                        break
+                    jogadaA = self.algoritmoA.getJogada(jogadaB)
                     jogadas.append(jogadaA)
                     turn = 1
 
@@ -155,6 +162,7 @@ class Game:
                             counts.append(jogadaB['player'])
 
         # Ganhou com truco
+        #TODO Ajustar para poder pedir truco de 6 ou mais
         if any(jogada['type'] == 'TRUCO'
                for jogada in jogadas) and any(jogada['type'] == 'ACCEPT'
                                               for jogada in jogadas):
