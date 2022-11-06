@@ -8,8 +8,6 @@ class AlgoritmoRandomico(Algoritmo):
 
     def getJogada(self, jogadaAdversario=None):
 
-        d2 = copy.deepcopy(self.game.deck)
-
         if jogadaAdversario != None and jogadaAdversario['type'] == 'TRUCO':
             if random.randint(0,1) == 1:
                 return self.accept(self.popCarta(random.choice(self.hand)))
@@ -18,7 +16,7 @@ class AlgoritmoRandomico(Algoritmo):
 
         randomChoice = random.randint(0, 10)
 
-        if randomChoice <= 1 and jogadaAdversario == None:
+        if randomChoice <= 1 and jogadaAdversario == None and self.isTrucoPermited():
             return self.truco(self.popCarta(random.choice(self.hand)))
         elif randomChoice == 2:
             return self.run()

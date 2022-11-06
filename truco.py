@@ -51,6 +51,7 @@ class Algoritmo:
 
     # pede truco (jogando a carta)
     def truco(self, carta):
+        self.game.last_player_truco = self.id
         return {"type": "TRUCO", "card": carta, "player": self.id}
 
     # aceita o truco (jogando a carta)
@@ -75,6 +76,9 @@ class Algoritmo:
 
     def setGame(self, game):
         self.game = game
+
+    def isTrucoPermited(self):
+        return self.game.last_player_truco != self.id
 
 
 # Classe que representa uma "Rodada" da partida, constituida por 3 jogadas de cada player
@@ -101,6 +105,8 @@ class Game:
 
         self.algoritmoA.setGame(self)
         self.algoritmoB.setGame(self)
+
+        self.last_player_truco = 0
 
     # Joga um game, constituido de 3 rodadas
     def play(self):
