@@ -120,6 +120,8 @@ class Game:
 
         self.algoritmoA.setGame(self)
         self.algoritmoB.setGame(self)
+        
+        self.winner = -1
 
         self.last_player_truco = 0
 
@@ -129,6 +131,9 @@ class Game:
         jogadas = []
         run = False
         win_counts = []
+        empate = [False, False, False]
+        jogadaB = {}
+        jogadaA = {}
 
         #TODO Necessário tratar empachada
         # realiza as rodadas
@@ -146,6 +151,7 @@ class Game:
                     playersRunOrPlay[0] = playersRunOrPlay[0] or (
                         jogadaA['type'] == 'RUN' or jogadaA['type'] == 'PLAY')
                     if jogadaA['type'] == 'RUN':
+                        jogadaB = {'player': algoritmos[1].id}
                         run = True
                         break
 
@@ -160,7 +166,12 @@ class Game:
 
                 # No proximo turno, quem joga é quem ganhou o último
                 if not (run):
-                    if self.cardWins(jogadaA['card'], jogadaB['card']):
+                    empate[i] = self.cardEquals(jogadaA['card'], jogadaB['card'])
+                        
+                    # Verifica empaxe e lança evento; (TEMOS CARTAS AQUI)
+                    if empate[i]:
+                        jogadas.append({'type': 'TIE'})
+                    elif self.cardWins(jogadaA['card'], jogadaB['card']):
                         win_counts.append(jogadaA['player'])
                     else:
                         win_counts.append(jogadaB['player'])
@@ -170,13 +181,45 @@ class Game:
                             turn = 1
                 else:
                     if jogadaA['type'] == 'RUN':
-                        win_counts.append(jogadaA['player'])
+                        win_counts.append(jogadaB['player'])
+                        self.winner = jogadaB['player']
+                        break
                     elif jogadaB['type'] == 'RUN':
                         win_counts.append(jogadaA['player'])
+                        self.winner = jogadaA['player']
+                        break
 
-                if (win_counts.count(self.algoritmoA.id) == 2
-                        or win_counts.count(self.algoritmoB.id) == 2):
+                if win_counts.count(self.algoritmoA.id) == 2:
+                    self.winner = self.algoritmoA.id
                     break
+
+                if win_counts.count(self.algoritmoB.id) == 2:
+                    self.winner = self.algoritmoB.id
+                    break
+
+                # Verifica empate
+                if empate == [True, False, False]:
+                    if i == 1:
+                        self.winner = win_counts[-1]
+                        break
+
+                elif empate == [False, True, False]:
+                    if i == 1:
+                        self.winner = win_counts[0]
+                        break
+
+                elif empate == [True, True, False]:
+                    if i == 2:
+                        self.winner = win_counts[-1]
+                        break
+
+                elif empate == [False, False, True]:
+                    if i == 2:
+                        self.winner = win_counts[0]
+                        break
+
+                elif empate == [True, True, True]:
+                    pass
 
                 run = jogadaA['type'] == 'RUN' or jogadaB['type'] == 'RUN'
 
@@ -187,47 +230,25 @@ class Game:
             if jogada['type'] == 'ACCEPT':
                 accept_count += 1
 
-        win_points = 1
-        if accept_count == 1:
-            win_points = 3
-
-        if accept_count > 1:
-            win_points = (accept_count * 3)
-
-        # Correu
-        if any(jogada['type'] == 'RUN' for jogada in jogadas):
-            jog = next(jogada for jogada in jogadas if jogada['type'] == 'RUN')
-            if jog['player'] == self.algoritmoA.id:
-                jogadas.append({
-                    'type': 'WIN',
-                    'player': self.algoritmoB.id,
-                    'points': win_points
-                })
-                self.winner = self.algoritmoB.id
-            else:
-                jogadas.append({
-                    'type': 'WIN',
-                    'player': self.algoritmoA.id,
-                    'points': win_points
-                })
-                self.winner = self.algoritmoA.id
-
-        # Conta jogo ganho normal (quem ganhou mais rodadas)
-        elif win_counts.count(self.algoritmoA.id) > win_counts.count(
-                self.algoritmoB.id):
+        if self.winner == -1:
+            win_points = 0
             jogadas.append({
-                'type': 'WIN',
-                'player': self.algoritmoA.id,
+                'type': 'TIED_MATCH',
                 'points': win_points
             })
-            self.winner = self.algoritmoA.id
         else:
+            win_points = 1
+            if accept_count == 1:
+                win_points = 3
+
+            if accept_count > 1:
+                win_points = (accept_count * 3)
+
             jogadas.append({
                 'type': 'WIN',
-                'player': self.algoritmoB.id,
+                'player': self.winner,
                 'points': win_points
             })
-            self.winner = self.algoritmoB.id
 
         self.totalPoints = win_points
 
@@ -244,15 +265,16 @@ class Game:
         numeroB = cartaB.split('_')[0]
         naipeB = cartaB.split('_')[1]
 
-        if int(numeroA) == self.deck.getNumeroManilha():
-            if int(numeroB) == self.deck.getNumeroManilha():
-                return powerOrderNaipe.index(naipeA) > powerOrderNaipe.index(
-                    naipeB)
+        numeroManilha = self.deck.getNumeroManilha()
+        if int(numeroA) == numeroManilha:
+            if int(numeroB) == numeroManilha:
+                return powerOrderNaipe.index(naipeA) > powerOrderNaipe.index(naipeB)
             else:
                 return True
+        elif int(numeroB) == numeroManilha:
+            return False
 
-        return powerOrderNumbers.index(numeroA) > powerOrderNumbers.index(
-            numeroB)
+        return powerOrderNumbers.index(numeroA) > powerOrderNumbers.index(numeroB)
 
     # verifica se as cartas "Empaxam"
     def cardEquals(self, cartaA, cartaB):
@@ -275,33 +297,36 @@ class Match:
         pointsB = 0
         matches = []
 
-        #while (pointsA < 12 and pointsB < 12):
+        while (pointsA < 12 and pointsB < 12):
         # DESCOMENTAR DEPOIS
-        game = Game(self.algoritmoA, self.algoritmoB)
-        handA = game.handA.copy()
-        handB = game.handB.copy()
-        jogadas = game.play()
-        totalPoints = totalPoints + game.totalPoints
-        mtch = {
-            'joker': game.manilha,
-            'winner': game.winner,
-            'match_id': str(uuid.uuid4())[0:8],
-            'points': game.totalPoints,
-            'player_1': handA,
-            'player_2': handB,
-            'plays': jogadas
-        }
+            game = Game(self.algoritmoA, self.algoritmoB)
+            handA = game.handA.copy()
+            handB = game.handB.copy()
+            jogadas = game.play()
+            totalPoints = totalPoints + game.totalPoints
+            mtch = {
+                'joker': game.manilha,
+                'winner': game.winner,
+                'match_id': str(uuid.uuid4())[0:8],
+                'points': game.totalPoints,
+                'player_1': handA,
+                'player_2': handB,
+                'plays': jogadas
+            }
 
-        if game.winner == self.algoritmoA.id:
-            pointsA = pointsA + game.totalPoints
-        else:
-            pointsB = pointsB + game.totalPoints
+            if game.winner == self.algoritmoA.id:
+                pointsA = pointsA + game.totalPoints
+            else:
+                pointsB = pointsB + game.totalPoints
 
-        matches.append(mtch)
+            matches.append(mtch)
+
+        winner = -1
 
         if pointsA >= 12:
             winner = self.algoritmoA.id
-        else:
+        
+        if pointsB >= 12:
             winner = self.algoritmoB.id
 
         mt = {
