@@ -28,7 +28,7 @@ POST /match
 ```
 {
 	"points": [9,12],
-	"winner": 1
+	"winner": 1,
 	"matches": [
 		{
 			"joker": "3_COPAS",
