@@ -1,5 +1,5 @@
 from truco import Algoritmo, Game
-import random
+import random, copy
 
 class AlgoritmoRandomico(Algoritmo):
 
@@ -7,6 +7,8 @@ class AlgoritmoRandomico(Algoritmo):
     game: Game
 
     def getJogada(self, jogadaAdversario=None):
+
+        d2 = copy.deepcopy(self.game.deck)
 
         if jogadaAdversario != None and jogadaAdversario['type'] == 'TRUCO':
             if random.randint(0,1) == 1:
