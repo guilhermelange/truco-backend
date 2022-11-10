@@ -14,13 +14,13 @@ class AlgoritmoBaseline(Algoritmo):
         #caso não corre 
         cartas = self.handOrderedByPower()
         if jogadaAdversario != None and jogadaAdversario['type'] == 'TRUCO':
-            if int(cartas[0].split('_')[0]) >= 1 or self.hasManilha():
+            if int(cartas[0].split('_')[0]) >= 1 or self.hasManilha():    
                 return self.accept()
             else:
                 return self.run()
 
         #se ja fez a primeira tenta empaxar a segunda ou a terceira se possivel
-
+ 
         #Nunca sair com a carta mais forte
         # talvez: se tiver 3 ou mais, lançar na saída;
         if jogadaAdversario == None and self.game.turn == 0:
