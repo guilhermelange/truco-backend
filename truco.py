@@ -49,9 +49,8 @@ class Deck:
 
 class Algoritmo:
 
-    hand: list
-
     def __init__(self, id):
+        self.hand = []
         self.id = id
 
     @abstractmethod
@@ -94,6 +93,33 @@ class Algoritmo:
     def isTrucoPermited(self):
         return self.game.last_player_truco != self.id
 
+    def handOrderedByPower(self):
+        powerOrderNumbers = [
+            '4', '5', '6', '7', '10', '11', '12', '1', '2', '3'
+        ]
+
+        ordered = sorted(
+            self.hand.copy(),
+            key=lambda a: powerOrderNumbers.index(a.split('_')[0]))
+
+        ordered.reverse()
+        return ordered
+
+    def hasManilha(self):
+        for carta in self.hand:
+            if int(carta.split('_')[0]) == self.game.num_manilha:
+                return True
+        return False
+
+    def popManilha(self):
+        for carta in self.hand:
+            if int(carta.split('_')[0]) == self.game.num_manilha:
+                return self.hand.pop(self.hand.index(carta))
+        return False
+
+    def isManilha(self, carta):
+        return int(carta.split('_')[0]) == self.game.num_manilha
+
 
 # Classe que representa uma "Rodada" da partida, constituida por 3 jogadas de cada player
 
@@ -120,10 +146,12 @@ class Game:
 
         self.algoritmoA.setGame(self)
         self.algoritmoB.setGame(self)
-        
+
         self.winner = -1
 
         self.last_player_truco = 0
+
+        print('Manilha: ' + str(self.num_manilha))
 
     # Joga um game, constituido de 3 rodadas1
     def play(self):
@@ -134,10 +162,12 @@ class Game:
         empate = [False, False, False]
         jogadaB = {}
         jogadaA = {}
+        self.turn = 0
 
         #TODO Necessário tratar empachada
         # realiza as rodadas
         for i in range(3):
+            self.turn = i
             if not run:
                 if turn == 1:
                     algoritmos = [self.algoritmoA, self.algoritmoB]
@@ -166,8 +196,9 @@ class Game:
 
                 # No proximo turno, quem joga é quem ganhou o último
                 if not (run):
-                    empate[i] = self.cardEquals(jogadaA['card'], jogadaB['card'])
-                        
+                    empate[i] = self.cardEquals(jogadaA['card'],
+                                                jogadaB['card'])
+
                     # Verifica empaxe e lança evento; (TEMOS CARTAS AQUI)
                     if empate[i]:
                         jogadas.append({'type': 'TIE'})
@@ -232,10 +263,7 @@ class Game:
 
         if self.winner == -1:
             win_points = 0
-            jogadas.append({
-                'type': 'TIED_MATCH',
-                'points': win_points
-            })
+            jogadas.append({'type': 'TIED_MATCH', 'points': win_points})
         else:
             win_points = 1
             if accept_count == 1:
@@ -268,20 +296,23 @@ class Game:
         numeroManilha = self.deck.getNumeroManilha()
         if int(numeroA) == numeroManilha:
             if int(numeroB) == numeroManilha:
-                return powerOrderNaipe.index(naipeA) > powerOrderNaipe.index(naipeB)
+                return powerOrderNaipe.index(naipeA) > powerOrderNaipe.index(
+                    naipeB)
             else:
                 return True
         elif int(numeroB) == numeroManilha:
             return False
 
-        return powerOrderNumbers.index(numeroA) > powerOrderNumbers.index(numeroB)
+        return powerOrderNumbers.index(numeroA) > powerOrderNumbers.index(
+            numeroB)
 
     # verifica se as cartas "Empaxam"
     def cardEquals(self, cartaA, cartaB):
         numeroA = cartaA.split('_')[0]
         numeroB = cartaB.split('_')[0]
         numeroManilha = self.deck.getNumeroManilha()
-        return numeroA == numeroB and int(numeroA) != numeroManilha and int(numeroB) != numeroManilha
+        return numeroA == numeroB and int(numeroA) != numeroManilha and int(
+            numeroB) != numeroManilha
 
 
 class Match:
@@ -298,7 +329,7 @@ class Match:
         matches = []
 
         while (pointsA < 12 and pointsB < 12):
-        # DESCOMENTAR DEPOIS
+            # DESCOMENTAR DEPOIS
             game = Game(self.algoritmoA, self.algoritmoB)
             handA = game.handA.copy()
             handB = game.handB.copy()
@@ -325,7 +356,7 @@ class Match:
 
         if pointsA >= 12:
             winner = self.algoritmoA.id
-        
+
         if pointsB >= 12:
             winner = self.algoritmoB.id
 
