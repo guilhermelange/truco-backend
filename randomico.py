@@ -14,9 +14,9 @@ class AlgoritmoRandomico(Algoritmo):
             else:
                 return self.run()
 
-        randomChoice = random.randint(0, 10)
+        randomChoice = random.randint(0, 20)
 
-        if randomChoice <= 1 and jogadaAdversario == None and self.isTrucoPermited():
+        if randomChoice <= 2 and jogadaAdversario == None and self.isTrucoPermited():
             return self.truco()
         elif randomChoice == 2:
             return self.run()

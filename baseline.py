@@ -32,7 +32,9 @@ class AlgoritmoBaseline(Algoritmo):
         
         #Priorizar "Matar" carta do adversário com cartas que não são manilha antes de usar a manilha
         if jogadaAdversario != None and jogadaAdversario['type'] == 'PLAY':
-            for carta in cartas:
+            cartasInverso = cartas.copy()
+            cartasInverso.reverse()
+            for carta in cartasInverso:
                 #if not self.isManilha(carta) and self.game.cardWins(carta, jogadaAdversario['card']):
                 if self.game.cardWins(carta, jogadaAdversario['card']):
                     return self.play(self.popCarta(carta))
