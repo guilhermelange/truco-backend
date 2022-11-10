@@ -12,7 +12,7 @@ class AlgoritmoBaseline(Algoritmo):
         #verificar se tem carta "forte" (indice alto de força (>=1 <=3) ou manilha)
         #caso sim, aceita,
         #caso não corre 
-        
+
         cartas = self.handOrderedByPower()
         if jogadaAdversario != None and jogadaAdversario['type'] == 'TRUCO':
             if int(cartas[0].split('_')[0]) >= 1 or self.hasManilha():
@@ -37,7 +37,7 @@ class AlgoritmoBaseline(Algoritmo):
 
  
         if jogadaAdversario == None and self.game.turn >= 1:
-            if int(cartas[0].split('_')[0]) >= 1 and self.hasManilha():
+            if int(cartas[0].split('_')[0]) >= 1 and self.hasManilha() and self.isTrucoPermited():
                 return self.truco()
 
         return self.play(cartas.pop())
