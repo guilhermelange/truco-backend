@@ -13,6 +13,17 @@ class AlgoritmoBaseline(Algoritmo):
         #caso sim, aceita,
         #caso não corre 
         cartas = self.handOrderedByPower()
+
+        #Priorizar "Matar" carta do adversário com cartas que não são manilha antes de usar a manilha
+        if jogadaAdversario != None and jogadaAdversario['type'] == 'PLAY':
+            cartasInverso = cartas.copy()
+            cartasInverso.reverse()
+            for carta in cartasInverso:
+                #if not self.isManilha(carta) and self.game.cardWins(carta, jogadaAdversario['card']):
+                if self.game.cardWins(carta, jogadaAdversario['card']):
+                    return self.play(self.popCarta(carta))
+
+
         if jogadaAdversario != None and jogadaAdversario['type'] == 'TRUCO':
             if int(cartas[0].split('_')[0]) >= 1 or self.hasManilha():    
                 return self.accept()
@@ -29,15 +40,6 @@ class AlgoritmoBaseline(Algoritmo):
                 return self.play(self.popCarta(cartas[0]))
             elif not self.isManilha(cartas[len(cartas) - 1]):
                     return self.play(self.popCarta(cartas.pop()))
-        
-        #Priorizar "Matar" carta do adversário com cartas que não são manilha antes de usar a manilha
-        if jogadaAdversario != None and jogadaAdversario['type'] == 'PLAY':
-            cartasInverso = cartas.copy()
-            cartasInverso.reverse()
-            for carta in cartasInverso:
-                #if not self.isManilha(carta) and self.game.cardWins(carta, jogadaAdversario['card']):
-                if self.game.cardWins(carta, jogadaAdversario['card']):
-                    return self.play(self.popCarta(carta))
 
  
         #Se tem carta boa (>=1 <=3 ou manilha) e estiver na seguinda ou terceira rodada pede truco
