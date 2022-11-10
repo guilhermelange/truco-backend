@@ -86,7 +86,7 @@ class Algoritmo:
 
     def setManilha(self, manilha):
         self.manilha = manilha
-
+ 
     def setGame(self, game):
         self.game = game
 
