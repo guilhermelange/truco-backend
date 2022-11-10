@@ -4,7 +4,7 @@ Backend para o jogo de truco da matéria de PIN3
 # Setup do projeto
 
 1. Criar virtual environment com ```python -m venv env```
-2. Ativar o virtual environment rodando o script `env/Scripts/Activate.ps1` no powerShell
+2. Ativar o virtual environment rodando o script `env/Scripts/activate`
 3. instalar dependências com ```pip install -r .\requirements.txt```
 4. rodar ```flask --app index run``` no terminal para iniciar o server de desenvolvimento
 5. Endpoint de produção: https://truco-server.vercel.app
@@ -26,67 +26,58 @@ POST /match
 
 ### RESPONSE
 ```
-[{
+{
+	"points": [9,12],
 	"winner": 1,
-	"points": [3,12]
-	"matchs": [
+	"matches": [
 		{
-			"joker": "2_COPAS",
-			"winner": 2,
-			"points": 3,
-			"player1": [
-				"2_COPAS",
-				"2_COPAS",
-				"2_COPAS"
+			"joker": "3_COPAS",
+			"match_id": "bc430f73",
+			"player_1": [
+				"11_PAUS",
+				"4_MOLES",
+				"12_MOLES"
 			],
-			"player2": [
-				"2_COPAS",
-				"2_COPAS",
-				"2_COPAS"
+			"player_2": [
+				"4_ESPADAS",
+				"12_ESPADAS",
+				"10_ESPADAS"
 			],
 			"plays": [
 				{
-					"type": "PLAY",
-					"card": "2_COPAS",
+					"card": "12_MOLES",
 					"player": 0,
-					"point": 1
+					"type": "PLAY"
 				},
 				{
-					"type": "PLAY",
-					"card": "2_COPAS",
+					"card": "12_ESPADAS",
 					"player": 1,
-					"point": 1
+					"type": "PLAY"
 				},
 				{
-					"type": "PLAY",
-					"card": "2_COPAS",
+					"type": "TIE"
+				},
+				{
+					"card": "4_MOLES",
+					"player": 0,
+					"type": "PLAY"
+				},
+				{
+					"card": "4_ESPADAS",
 					"player": 1,
-					"point": 1
+					"type": "PLAY"
 				},
 				{
-					"type": "TRUCO",
 					"player": 1,
-					"point": 1
-				},
-				{
-					"type": "ACCEPT",
-					"player": 2,
-					"point": 3
-				},
-				{
-					"type": "RUN",
-					"player": 1,
-					"point": 3
-				},
-				{
-					"type": "WIN",
-					"player": 2,
-					"point": 3
+					"points": 1,
+					"type": "WIN"
 				}
-			]
-		}
-	]
-}]
+			],
+			"points": 1,
+			"winner": 1
+		}, ...
+	],
+}
 ```
 
 ### Exemplo de requisição CURL
