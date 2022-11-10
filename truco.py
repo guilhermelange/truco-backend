@@ -97,6 +97,8 @@ class Algoritmo:
         powerOrderNumbers = [
             '4', '5', '6', '7', '10', '11', '12', '1', '2', '3'
         ]
+        powerOrderNumbers.remove(self.game.num_manilha)
+        powerOrderNumbers.append(self.game.num_manilha)
 
         ordered = sorted(
             self.hand.copy(),
