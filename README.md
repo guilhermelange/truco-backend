@@ -19,7 +19,7 @@ POST /match
     },
     {
         "id": 1,
-        "algorithm": "BASELINE1"
+        "algorithm": "BASELINE"
     }
 ]
 ```
@@ -27,45 +27,43 @@ POST /match
 ### RESPONSE
 ```
 {
-	"points": [9,12],
-	"winner": 1,
 	"matches": [
 		{
-			"joker": "3_COPAS",
-			"match_id": "bc430f73",
+			"joker": "2_MOLES",
+			"match_id": "894ffb5d",
 			"player_1": [
-				"11_PAUS",
-				"4_MOLES",
-				"12_MOLES"
+				"7_COPAS",
+				"1_PAUS",
+				"11_COPAS"
 			],
 			"player_2": [
-				"4_ESPADAS",
-				"12_ESPADAS",
-				"10_ESPADAS"
+				"1_ESPADAS",
+				"2_PAUS",
+				"3_MOLES"
 			],
 			"plays": [
 				{
-					"card": "12_MOLES",
+					"card": "3_MOLES",
+					"player": 1,
+					"type": "PLAY"
+				},
+				{
+					"card": "7_COPAS",
 					"player": 0,
 					"type": "PLAY"
 				},
 				{
-					"card": "12_ESPADAS",
+					"card": "1_ESPADAS",
 					"player": 1,
+					"type": "PLAY"
+				},
+				{
+					"card": "1_PAUS",
+					"player": 0,
 					"type": "PLAY"
 				},
 				{
 					"type": "TIE"
-				},
-				{
-					"card": "4_MOLES",
-					"player": 0,
-					"type": "PLAY"
-				},
-				{
-					"card": "4_ESPADAS",
-					"player": 1,
-					"type": "PLAY"
 				},
 				{
 					"player": 1,
@@ -75,24 +73,29 @@ POST /match
 			],
 			"points": 1,
 			"winner": 1
-		}, ...
+		},
+		[...]
 	],
+	"points": [
+		5,
+		13
+	],
+	"winner": 1
 }
 ```
 
 ### Exemplo de requisição CURL
 ```
-curl --request POST \
-  --url http://127.0.0.1:5000/match \
-  --header 'Content-Type: application/json' \
-  --data '[
+curl --location --request POST 'https://truco-server.vercel.app/match' \
+--header 'Content-Type: application/json' \
+--data-raw '[
     {
         "id": 0,
         "algorithm": "RANDOM"
     },
     {
         "id": 1,
-        "algorithm": "RANDOM"
+        "algorithm": "BASELINE"
     }
 ]'
 
