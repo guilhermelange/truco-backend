@@ -8,7 +8,7 @@ class AlgoritmoRandomico(Algoritmo):
 
     def getJogada(self, jogadaAdversario=None):
 
-        if jogadaAdversario != None and jogadaAdversario['type'] == 'TRUCO':
+        if len(self.game.jogadas) and self.game.jogadas[-1]['type'] == 'TRUCO':
             if random.randint(0,1) == 1:
                 return self.accept()
             else:

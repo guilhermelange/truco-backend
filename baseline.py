@@ -7,7 +7,6 @@ class AlgoritmoBaseline(Algoritmo):
     game: Game
 
     def getJogada(self, jogadaAdversario=None):
-
         #Se o adversario pediu truco
         #verificar se tem carta "forte" (indice alto de força (>=1 <=3) ou manilha)
         #caso sim, aceita,
@@ -24,7 +23,8 @@ class AlgoritmoBaseline(Algoritmo):
                     return self.play(self.popCarta(carta))
 
 
-        if jogadaAdversario != None and jogadaAdversario['type'] == 'TRUCO':
+        #if jogadaAdversario != None and jogadaAdversario['type'] == 'TRUCO':
+        if len(self.game.jogadas) > 0 and self.game.jogadas[-1]['type'] == 'TRUCO':
             if int(cartas[0].split('_')[0]) >= 1 or self.hasManilha():    
                 return self.accept()
             else:

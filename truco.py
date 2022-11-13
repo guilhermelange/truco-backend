@@ -150,20 +150,19 @@ class Game:
         self.algoritmoB.setGame(self)
 
         self.winner = -1
-
         self.last_player_truco = 0
-
-        print('Manilha: ' + str(self.num_manilha))
+        self.current_player = -1
+        self.jogadas = []
 
     # Joga um game, constituido de 3 rodadas1
     def play(self):
         turn = random.randint(0, 1)
-        jogadas = []
         run = False
         win_counts = []
         empate = [False, False, False]
         jogadaB = {}
         jogadaA = {}
+        self.jogadas = []
         self.turn = 0
 
         #TODO Necessário tratar empachada
@@ -177,20 +176,22 @@ class Game:
                     algoritmos = [self.algoritmoB, self.algoritmoA]
 
                 playersRunOrPlay = [False, False]
-                while (any(playersRunOrPlay) == False):
+                #while (any(playersRunOrPlay) == False):
+                while (playersRunOrPlay[0] == False or playersRunOrPlay[1] == False):
+                    self.current_player = algoritmos[0].id
                     jogadaA = algoritmos[0].getJogada()
-                    jogadas.append(jogadaA)
-                    playersRunOrPlay[0] = playersRunOrPlay[0] or (
-                        jogadaA['type'] == 'RUN' or jogadaA['type'] == 'PLAY')
+                    self.jogadas.append(jogadaA)
+
+                    playersRunOrPlay[0] = playersRunOrPlay[0] or (jogadaA['type'] == 'RUN' or jogadaA['type'] == 'PLAY')
                     if jogadaA['type'] == 'RUN':
                         jogadaB = {'player': algoritmos[1].id}
                         run = True
                         break
 
+                    self.current_player = algoritmos[1].id
                     jogadaB = algoritmos[1].getJogada(jogadaA)
-                    jogadas.append(jogadaB)
-                    playersRunOrPlay[1] = playersRunOrPlay[1] or (
-                        jogadaB['type'] == 'RUN' or jogadaB['type'] == 'PLAY')
+                    self.jogadas.append(jogadaB)
+                    playersRunOrPlay[1] = playersRunOrPlay[1] or (jogadaB['type'] == 'RUN' or jogadaB['type'] == 'PLAY')
 
                     if jogadaB['type'] == 'RUN':
                         run = True
@@ -198,12 +199,19 @@ class Game:
 
                 # No proximo turno, quem joga é quem ganhou o último
                 if not (run):
-                    empate[i] = self.cardEquals(jogadaA['card'],
+                    empate[i] = False
+                    
+                    try:
+                        empate[i] = self.cardEquals(jogadaA['card'],
                                                 jogadaB['card'])
+                    except:
+                        print(self.jogadas)
+
 
                     # Verifica empaxe e lança evento; (TEMOS CARTAS AQUI)
                     if empate[i]:
-                        jogadas.append({'type': 'TIE'})
+                        #self.jogadas.append({'type': 'TIE'})
+                        pass
                     elif self.cardWins(jogadaA['card'], jogadaB['card']):
                         win_counts.append(jogadaA['player'])
                     else:
@@ -259,13 +267,13 @@ class Game:
         # conta rodadas ganhas
 
         accept_count = 0
-        for jogada in jogadas:
+        for jogada in self.jogadas:
             if jogada['type'] == 'ACCEPT':
                 accept_count += 1
 
         if self.winner == -1:
             win_points = 0
-            jogadas.append({'type': 'TIED_MATCH', 'points': win_points})
+            self.jogadas.append({'type': 'TIED_MATCH', 'points': win_points})
         else:
             win_points = 1
             if accept_count == 1:
@@ -274,7 +282,7 @@ class Game:
             if accept_count > 1:
                 win_points = (accept_count * 3)
 
-            jogadas.append({
+            self.jogadas.append({
                 'type': 'WIN',
                 'player': self.winner,
                 'points': win_points
@@ -282,7 +290,7 @@ class Game:
 
         self.totalPoints = win_points
 
-        return jogadas
+        return self.jogadas
 
     # Verica se a carta A ganha da carta B
     def cardWins(self, cartaA, cartaB):
@@ -330,29 +338,29 @@ class Match:
         pointsB = 0
         matches = []
 
-        while (pointsA < 12 and pointsB < 12):
+        #while (pointsA < 12 and pointsB < 12):
             # DESCOMENTAR DEPOIS
-            game = Game(self.algoritmoA, self.algoritmoB)
-            handA = game.handA.copy()
-            handB = game.handB.copy()
-            jogadas = game.play()
-            totalPoints = totalPoints + game.totalPoints
-            mtch = {
-                'joker': game.manilha,
-                'winner': game.winner,
-                'match_id': str(uuid.uuid4())[0:8],
-                'points': game.totalPoints,
-                'player_1': handA,
-                'player_2': handB,
-                'plays': jogadas
-            }
+        game = Game(self.algoritmoA, self.algoritmoB)
+        handA = game.handA.copy()
+        handB = game.handB.copy()
+        jogadas = game.play()
+        totalPoints = totalPoints + game.totalPoints
+        mtch = {
+            'joker': game.manilha,
+            'winner': game.winner,
+            'match_id': str(uuid.uuid4())[0:8],
+            'points': game.totalPoints,
+            'player_1': handA,
+            'player_2': handB,
+            'plays': jogadas
+        }
 
-            if game.winner == self.algoritmoA.id:
-                pointsA = pointsA + game.totalPoints
-            else:
-                pointsB = pointsB + game.totalPoints
+        if game.winner == self.algoritmoA.id:
+            pointsA = pointsA + game.totalPoints
+        else:
+            pointsB = pointsB + game.totalPoints
 
-            matches.append(mtch)
+        matches.append(mtch)
 
         winner = -1
 
