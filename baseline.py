@@ -12,6 +12,7 @@ class AlgoritmoBaseline(Algoritmo):
         #caso sim, aceita,
         #caso não corre 
         cartas = self.handOrderedByPower()
+        winCount = self.game.win_counts.count(self.id)
 
         #Priorizar "Matar" carta do adversário com cartas que não são manilha antes de usar a manilha
         if jogadaAdversario != None and jogadaAdversario['type'] == 'PLAY':
@@ -25,7 +26,13 @@ class AlgoritmoBaseline(Algoritmo):
 
         #if jogadaAdversario != None and jogadaAdversario['type'] == 'TRUCO':
         if len(self.game.jogadas) > 0 and self.game.jogadas[-1]['type'] == 'TRUCO':
-            if int(cartas[0].split('_')[0]) >= 1 or self.hasManilha():    
+            if len(cartas) == 0:
+                if winCount >= 1:
+                    return self.accept()
+                else:
+                    return self.run()
+
+            elif int(cartas[0].split('_')[0]) >= 1 or self.hasManilha():
                 return self.accept()
             else:
                 return self.run()

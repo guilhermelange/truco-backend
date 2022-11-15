@@ -62,8 +62,6 @@ class MonteCarloTreeSearchNode(ABC):
             (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
         ]
-        # print('choices_weights: ' + str(len(self.children)))
-        # print(choices_weights)
         return self.children[np.argmax(choices_weights)]
 
     def rollout_policy(self, possible_moves):
@@ -86,8 +84,8 @@ class TwoPlayersGameMonteCarloTreeSearchNode(MonteCarloTreeSearchNode):
 
     @property
     def q(self):
-        wins = self._results[self.parent.state.next_to_move]
-        loses = self._results[-1 * self.parent.state.next_to_move]
+        wins = self._results[self.state.matchPlayer]
+        loses = self._results[-1 * self.state.matchPlayer]
         return wins - loses
 
     @property
@@ -109,15 +107,12 @@ class TwoPlayersGameMonteCarloTreeSearchNode(MonteCarloTreeSearchNode):
     def rollout(self):
         current_rollout_state = self.state
         while not current_rollout_state.is_game_over():
-            possible_moves = current_rollout_state.get_legal_actions() # retorna o array de qq coisa
-            action = self.rollout_policy(possible_moves) # sorteia
+            possible_moves = current_rollout_state.get_legal_actions()
+            action = self.rollout_policy(possible_moves)
             current_rollout_state = current_rollout_state.move(action)
         return current_rollout_state.game_result
 
     def backpropagate(self, result):
-        # print('session.match_points: ' + str(session.match_points))
-        #print('session.match_points: ' + str(session.match_points))
-        #print(result)
         self._number_of_visits += 1.
         self._results[result] += session.match_points
         if self.parent:

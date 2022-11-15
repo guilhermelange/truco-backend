@@ -23,10 +23,13 @@ def runMatch(algorithmA, algorithmB):
 
 def getAlgorithm(algorithm):
     if algorithm['algorithm'] == 'RANDOM':
+        print('RANDOM')
         return AlgoritmoRandomico(algorithm['id'])
     elif algorithm['algorithm'] == 'BASELINE':
+        print('BASELINE')
         return AlgoritmoBaseline(algorithm['id'])
     else:
+        print('MONTECARLO')
         return AlogritmoMonteCarloTreeSearch(algorithm['id'])
 
 if __name__ == '__main__':

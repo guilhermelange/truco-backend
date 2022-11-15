@@ -156,7 +156,7 @@ class Game:
     # Joga um game, constituido de 3 rodadas1
     def play(self, turn):
         run = False
-        win_counts = []
+        self.win_counts = []
         empate = [False, False, False]
         jogadaB = {}
         jogadaA = {}
@@ -165,6 +165,8 @@ class Game:
         self.turn = 0
 
         # realiza as rodadas
+        print('')
+        temp = str(uuid.uuid4())[0:8]
         for i in range(3):
             self.turn = i
             if not run:
@@ -178,7 +180,9 @@ class Game:
                 #while (any(playersRunOrPlay) == False):
                 while (playersRunOrPlay[0] == False or playersRunOrPlay[1] == False):
                     self.current_player = algoritmos[0].id
+                    
                     jogadaA = algoritmos[0].getJogada()
+                    print('Entrou jogadaA: ' + str(i) + ' - ' + temp + ' - ' + jogadaA['type'] + ' - ' + str(jogadaA['player']))
                     self.jogadas.append(jogadaA)
 
                     playersRunOrPlay[0] = playersRunOrPlay[0] or (jogadaA['type'] == 'RUN' or jogadaA['type'] == 'PLAY')
@@ -192,6 +196,7 @@ class Game:
 
                     self.current_player = algoritmos[1].id
                     jogadaB = algoritmos[1].getJogada(jogadaA)
+                    print('Entrou jogadaB: ' + str(i) + ' - ' + temp + ' - ' + jogadaB['type'] + ' - ' + str(jogadaB['player']))
                     self.jogadas.append(jogadaB)
                     playersRunOrPlay[1] = playersRunOrPlay[1] or (jogadaB['type'] == 'RUN' or jogadaB['type'] == 'PLAY')
 
@@ -209,50 +214,50 @@ class Game:
                         self.jogadas.append({'type': 'TIE'})
                         pass
                     elif self.cardWins(jogadasCard[jogadaA['player']]['card'], jogadasCard[jogadaB['player']]['card']):
-                        win_counts.append(jogadaA['player'])
+                        self.win_counts.append(jogadaA['player'])
                     else:
-                        win_counts.append(jogadaB['player'])
+                        self.win_counts.append(jogadaB['player'])
                         if turn == 1:
                             turn = 0
                         else:
                             turn = 1
                 else:
                     if jogadaA['type'] == 'RUN':
-                        win_counts.append(jogadaB['player'])
+                        self.win_counts.append(jogadaB['player'])
                         self.winner = jogadaB['player']
                         break
                     elif jogadaB['type'] == 'RUN':
-                        win_counts.append(jogadaA['player'])
+                        self.win_counts.append(jogadaA['player'])
                         self.winner = jogadaA['player']
                         break
 
-                if win_counts.count(self.algoritmoA.id) == 2:
+                if self.win_counts.count(self.algoritmoA.id) == 2:
                     self.winner = self.algoritmoA.id
                     break
 
-                if win_counts.count(self.algoritmoB.id) == 2:
+                if self.win_counts.count(self.algoritmoB.id) == 2:
                     self.winner = self.algoritmoB.id
                     break
 
                 # Verifica empate
                 if empate == [True, False, False]:
                     if i == 1:
-                        self.winner = win_counts[-1]
+                        self.winner = self.win_counts[-1]
                         break
 
                 elif empate == [False, True, False]:
                     if i == 1:
-                        self.winner = win_counts[0]
+                        self.winner = self.win_counts[0]
                         break
 
                 elif empate == [True, True, False]:
                     if i == 2:
-                        self.winner = win_counts[-1]
+                        self.winner = self.win_counts[-1]
                         break
 
                 elif empate == [False, False, True]:
                     if i == 2:
-                        self.winner = win_counts[0]
+                        self.winner = self.win_counts[0]
                         break
 
                 elif empate == [True, True, True]:
