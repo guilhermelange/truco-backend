@@ -336,29 +336,29 @@ class Match:
         pointsB = 0
         matches = []
 
-        #while (pointsA < 12 and pointsB < 12):
+        while (pointsA < 12 and pointsB < 12):
             # DESCOMENTAR DEPOIS
-        game = Game(self.algoritmoA, self.algoritmoB)
-        handA = game.handA.copy()
-        handB = game.handB.copy()
-        jogadas = game.play()
-        totalPoints = totalPoints + game.totalPoints
-        mtch = {
-            'joker': game.manilha,
-            'winner': game.winner,
-            'match_id': str(uuid.uuid4())[0:8],
-            'points': game.totalPoints,
-            'player_1': handA,
-            'player_2': handB,
-            'plays': jogadas
-        }
+            game = Game(self.algoritmoA, self.algoritmoB)
+            handA = game.handA.copy()
+            handB = game.handB.copy()
+            jogadas = game.play()
+            totalPoints = totalPoints + game.totalPoints
+            mtch = {
+                'joker': game.manilha,
+                'winner': game.winner,
+                'match_id': str(uuid.uuid4())[0:8],
+                'points': game.totalPoints,
+                'player_1': handA,
+                'player_2': handB,
+                'plays': jogadas
+            }
 
-        if game.winner == self.algoritmoA.id:
-            pointsA = pointsA + game.totalPoints
-        else:
-            pointsB = pointsB + game.totalPoints
+            if game.winner == self.algoritmoA.id:
+                pointsA = pointsA + game.totalPoints
+            else:
+                pointsB = pointsB + game.totalPoints
 
-        matches.append(mtch)
+            matches.append(mtch)
 
         winner = -1
 
