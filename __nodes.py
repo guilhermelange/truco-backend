@@ -1,7 +1,7 @@
 import numpy as np
 from collections import defaultdict
 from abc import ABC, abstractmethod
-
+import session
 
 class MonteCarloTreeSearchNode(ABC):
 
@@ -62,6 +62,8 @@ class MonteCarloTreeSearchNode(ABC):
             (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
         ]
+        # print('choices_weights: ' + str(len(self.children)))
+        # print(choices_weights)
         return self.children[np.argmax(choices_weights)]
 
     def rollout_policy(self, possible_moves):
@@ -113,7 +115,8 @@ class TwoPlayersGameMonteCarloTreeSearchNode(MonteCarloTreeSearchNode):
         return current_rollout_state.game_result
 
     def backpropagate(self, result):
+        # print('session.match_points: ' + str(session.match_points))
         self._number_of_visits += 1.
-        self._results[result] += 1.
+        self._results[result] += session.match_points
         if self.parent:
             self.parent.backpropagate(result)

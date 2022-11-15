@@ -5,7 +5,6 @@ import json
 
 realizedMatches = []
 
-
 class Deck:
 
     def __init__(self):
@@ -162,10 +161,10 @@ class Game:
         empate = [False, False, False]
         jogadaB = {}
         jogadaA = {}
+        jogadasCard = []
         self.jogadas = []
         self.turn = 0
 
-        #TODO Necessário tratar empachada
         # realiza as rodadas
         for i in range(3):
             self.turn = i
@@ -176,6 +175,7 @@ class Game:
                     algoritmos = [self.algoritmoB, self.algoritmoA]
 
                 playersRunOrPlay = [False, False]
+                jogadasCard = [None, None]
                 #while (any(playersRunOrPlay) == False):
                 while (playersRunOrPlay[0] == False or playersRunOrPlay[1] == False):
                     self.current_player = algoritmos[0].id
@@ -187,6 +187,9 @@ class Game:
                         jogadaB = {'player': algoritmos[1].id}
                         run = True
                         break
+                    elif jogadaA['type'] == 'PLAY':
+                        jogadasCard[jogadaA['player']] = jogadaA
+
 
                     self.current_player = algoritmos[1].id
                     jogadaB = algoritmos[1].getJogada(jogadaA)
@@ -196,23 +199,17 @@ class Game:
                     if jogadaB['type'] == 'RUN':
                         run = True
                         break
+                    elif jogadaB['type'] == 'PLAY':
+                        jogadasCard[jogadaB['player']] = jogadaB
 
                 # No proximo turno, quem joga é quem ganhou o último
                 if not (run):
-                    empate[i] = False
-                    
-                    try:
-                        empate[i] = self.cardEquals(jogadaA['card'],
-                                                jogadaB['card'])
-                    except:
-                        print(self.jogadas)
-
-
                     # Verifica empaxe e lança evento; (TEMOS CARTAS AQUI)
+                    empate[i] = self.cardEquals(jogadasCard[jogadaA['player']]['card'], jogadasCard[jogadaB['player']]['card'])
                     if empate[i]:
-                        #self.jogadas.append({'type': 'TIE'})
+                        self.jogadas.append({'type': 'TIE'})
                         pass
-                    elif self.cardWins(jogadaA['card'], jogadaB['card']):
+                    elif self.cardWins(jogadasCard[jogadaA['player']]['card'], jogadasCard[jogadaB['player']]['card']):
                         win_counts.append(jogadaA['player'])
                     else:
                         win_counts.append(jogadaB['player'])
@@ -262,7 +259,8 @@ class Game:
                 elif empate == [True, True, True]:
                     pass
 
-                run = jogadaA['type'] == 'RUN' or jogadaB['type'] == 'RUN'
+                # Desnecessário calcular aqui, e pode estar errado e rodar mais uma vez, causando erro
+                #run = jogadaA['type'] == 'RUN' or jogadaB['type'] == 'RUN'
 
         # conta rodadas ganhas
 
@@ -369,6 +367,12 @@ class Match:
 
         if pointsB >= 12:
             winner = self.algoritmoB.id
+
+        if winner == -1:
+            if pointsA >= pointsB:
+                winner = self.algoritmoA.id
+            else:
+                winner = self.algoritmoB.id
 
         mt = {
             'winner': winner,

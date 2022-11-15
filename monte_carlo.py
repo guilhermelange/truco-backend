@@ -5,6 +5,7 @@ from __common import TwoPlayersAbstractGameState
 from __common import AbstractGameAction
 from __nodes import TwoPlayersGameMonteCarloTreeSearchNode
 from __search import MonteCarloTreeSearch
+import session
 
 def otherPlayer(playerIndex):
     if playerIndex == 0:
@@ -23,16 +24,21 @@ class AlogritmoMonteCarloTreeSearch(Algoritmo):
         cartas[otherPlayer(self.id)] = self.handAdversario
 
         # print(cartas)
+        rodadaJogadas = [jogada for jogada in self.game.jogadas if jogada['type'] != 'TIE']
         state = {
-            'jogadas': self.game.jogadas,
+            'jogadas': rodadaJogadas,
             'cartas': cartas,
             'manilha': self.manilha
         }
+        clear = "\n" * 100
+        print(clear)
+        print(state)
+        
         game_state = TrucoGameState(state, next_to_move=self.id)
 
         root = TwoPlayersGameMonteCarloTreeSearchNode(state=game_state)
         mcts = MonteCarloTreeSearch(root)
-        best_node = mcts.best_action(simulations_number=5)
+        best_node = mcts.best_action(simulations_number=1000)
 
         resultado = best_node.state.dados['jogadas'][-1]
 
@@ -89,6 +95,7 @@ class TrucoGameState(TwoPlayersAbstractGameState):
         self.winner = None
         jogadas = self.dados['jogadas']
         jogadas_empate = [False, False, False]
+        acceptedCount = 0
 
         user_jogadas = [0, 0]
         win_count = [0, 0]
@@ -115,6 +122,7 @@ class TrucoGameState(TwoPlayersAbstractGameState):
                 elif jogada['type'] == 'TRUCO':
                     empate = False
                 elif jogada['type'] == 'ACCEPT':
+                    acceptedCount += 1
                     empate = False
                 elif jogada['type'] == 'TIE':
                     empate = True
@@ -131,14 +139,15 @@ class TrucoGameState(TwoPlayersAbstractGameState):
                     # if user_jogadas[0] == 0 or user_jogadas[1] == 0:
                     #     pass
 
-                    try:
-                        isEqual = self.cardEquals(user_jogadas[player]['card'], user_jogadas[varOtherPlayer]['card'])
-                    except: 
-                        isEqual = False
-                        print('jogadas abaixo: ')
-                        print(self.dados['jogadas'])
+                    # GLL REVER
+                    # try:
+                    #isEqual = self.cardEquals(user_jogadas[player]['card'], user_jogadas[varOtherPlayer]['card'])
+                    # except: 
+                    #     isEqual = False
+                    #     print('jogadas abaixo: ')
+                    #     print(self.dados['jogadas'])
 
-                    if isEqual:
+                    if self.cardEquals(user_jogadas[player]['card'], user_jogadas[varOtherPlayer]['card']):
                         jogadas_empate[rodada] = True
                     elif self.cardWins(user_jogadas[player]['card'], user_jogadas[varOtherPlayer]['card']):
                         win_count[player] += 1
@@ -186,13 +195,20 @@ class TrucoGameState(TwoPlayersAbstractGameState):
         if self.winner == None:
             return None
 
+        currentMatchPoints = 0
+        if acceptedCount == 0:
+            currentMatchPoints = 1
+        elif acceptedCount == 1:
+            currentMatchPoints = 3
+        elif acceptedCount > 1:
+            currentMatchPoints = currentMatchPoints * 3
+
+        session.update_match_points(currentMatchPoints)
+
         return 1 if self.winner == 0 else -1
 
     def is_game_over(self):
         return self.game_result is not None
-
-    def is_move_legal(self, move):
-        return True
 
     def move(self, move):
         newState = copy.deepcopy(self.dados)
@@ -201,7 +217,6 @@ class TrucoGameState(TwoPlayersAbstractGameState):
         if 'card' in move.jogada:
             indexCarta = newState['cartas'][self.next_to_move].index(move.jogada['card'])
             newState['cartas'][self.next_to_move].pop(indexCarta)
-        
         
         return type(self)(newState, otherPlayer(self.next_to_move))
 
@@ -217,7 +232,7 @@ class TrucoGameState(TwoPlayersAbstractGameState):
             for carta in self.dados['cartas'][self.next_to_move]:
                 moves.append(TrucoMove({"type": "PLAY", "card": carta, "player": self.next_to_move}))
 
-            if len(jogadas) > 0 and jogadas[-1]['player'] != self.next_to_move and turnoPar:
+            if len(jogadas) > 0 and jogadas[-1]['player'] != self.next_to_move: #and turnoPar: GLL AQUI
                 moves.append(TrucoMove({"type": "TRUCO", "player": self.next_to_move}))
 
         return moves
@@ -228,13 +243,18 @@ class TrucoMove(AbstractGameAction):
         jogada['monte_carlo'] = True
         self.jogada = jogada
         self.card = None
+        self.player = None
 
         if 'card' in jogada:
             self.card = jogada['card']
 
+        if 'player' in jogada:
+            self.player = jogada['player']
+
     def __repr__(self):
-        return "type:{0} card:{1}".format(
+        return "type:{0} card:{1} player:{2}".format(
             self.jogada['type'],
-            self.card
+            self.card,
+            self.player
         )
         
