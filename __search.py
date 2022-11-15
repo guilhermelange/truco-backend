@@ -9,8 +9,8 @@ class MonteCarloTreeSearch(object):
         node : mctspy.tree.nodes.MonteCarloTreeSearchNode
         """
         self.root = node
-        print('original root:')
-        print(self.root)
+        # print('original root:')
+        # print(self.root)
 
     def best_action(self, simulations_number=None, total_simulation_seconds=None):
         """
@@ -44,10 +44,10 @@ class MonteCarloTreeSearch(object):
                 v.backpropagate(reward)
         # to select best child go for exploitation only
         # return self.root.best_child(c_param=0.)
-        print('Final state: ')
-        print(self.root.state.dados)
-        print(self.root.untried_actions)
-        print(self.root.children)
+        # print('Final state: ')
+        # print(self.root.state.dados)
+        # print(self.root.untried_actions)
+        # print(self.root.children)
         return self.root.best_child(c_param=0.)
 
     def _tree_policy(self):
@@ -60,8 +60,8 @@ class MonteCarloTreeSearch(object):
         """
         current_node = self.root
         # print(self.root.state.dados)
-        print('current_node.is_terminal_node(): ' + str(current_node.is_terminal_node()))
-        print('current_node.is_fully_expanded(): ' + str(current_node.is_fully_expanded()))
+        # print('current_node.is_terminal_node(): ' + str(current_node.is_terminal_node()))
+        # print('current_node.is_fully_expanded(): ' + str(current_node.is_fully_expanded()))
         while not current_node.is_terminal_node():
             if not current_node.is_fully_expanded():
                 return current_node.expand()
