@@ -6,12 +6,6 @@ import session
 class MonteCarloTreeSearchNode(ABC):
 
     def __init__(self, state, parent=None):
-        """
-        Parameters
-        ----------
-        state : mctspy.games.common.TwoPlayersAbstractGameState
-        parent : MonteCarloTreeSearchNode
-        """
         self.state = state
         self.parent = parent
         self.children = []
@@ -19,13 +13,6 @@ class MonteCarloTreeSearchNode(ABC):
     @property
     @abstractmethod
     def untried_actions(self):
-        """
-
-        Returns
-        -------
-        list of mctspy.games.common.AbstractGameAction
-
-        """
         pass
 
     @property
@@ -69,7 +56,7 @@ class MonteCarloTreeSearchNode(ABC):
 
 
 
-class TwoPlayersGameMonteCarloTreeSearchNode(MonteCarloTreeSearchNode):
+class MonteCarloTreeSearchNode(MonteCarloTreeSearchNode):
     def __init__(self, state, parent=None):
         super().__init__(state, parent)
         self._number_of_visits = 0.
@@ -79,7 +66,7 @@ class TwoPlayersGameMonteCarloTreeSearchNode(MonteCarloTreeSearchNode):
     @property
     def untried_actions(self):
         if self._untried_actions is None:
-            self._untried_actions = self.state.get_legal_actions()
+            self._untried_actions = self.state.getLegalActions()
         return self._untried_actions
 
     @property
@@ -94,22 +81,22 @@ class TwoPlayersGameMonteCarloTreeSearchNode(MonteCarloTreeSearchNode):
 
     def expand(self):
         action = self.untried_actions.pop()
-        next_state = self.state.move(action)
-        child_node = TwoPlayersGameMonteCarloTreeSearchNode(
+        next_state = self.state.doAction(action)
+        child_node = MonteCarloTreeSearchNode(
             next_state, parent=self
         )
         self.children.append(child_node)
         return child_node
 
     def is_terminal_node(self):
-        return self.state.is_game_over()
+        return self.state.isGameOver()
 
     def rollout(self):
         current_rollout_state = self.state
-        while not current_rollout_state.is_game_over():
-            possible_moves = current_rollout_state.get_legal_actions()
+        while not current_rollout_state.isGameOver():
+            possible_moves = current_rollout_state.getLegalActions()
             action = self.rollout_policy(possible_moves)
-            current_rollout_state = current_rollout_state.move(action)
+            current_rollout_state = current_rollout_state.doAction(action)
         return current_rollout_state.game_result
 
     def backpropagate(self, result):

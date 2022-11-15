@@ -1,7 +1,7 @@
-from truco import Algoritmo, Game
-import random, copy
+from truco import Algorithm, Game
+import random
 
-class AlgoritmoRandomico(Algoritmo):
+class RandomAlgorithm(Algorithm):
 
     #apenas para o autocomplete
     game: Game

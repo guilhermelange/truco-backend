@@ -1,10 +1,10 @@
-import numpy as np
 import copy
-from truco import Algoritmo, Game
-from __common import TwoPlayersAbstractGameState
-from __common import AbstractGameAction
-from __nodes import TwoPlayersGameMonteCarloTreeSearchNode
-from __search import MonteCarloTreeSearch
+from truco import Algorithm, Game
+from state import AbstractGameState
+from state import AbstractAction
+from mcts import MonteCarloTreeSearchNode
+from search import MonteCarloTreeSearch
+
 import session
 
 def otherPlayer(playerIndex):
@@ -19,7 +19,7 @@ def getMatchPlayer(playerIndex):
     else:
         return 1
 
-class AlogritmoMonteCarloTreeSearch(Algoritmo):
+class MonteCarloTreeSearchAlgorithm(Algorithm):
 
     #apenas para o autocomplete
     game: Game
@@ -38,9 +38,9 @@ class AlogritmoMonteCarloTreeSearch(Algoritmo):
         
         game_state = TrucoGameState(state, next_to_move=self.id, matchPlayer=getMatchPlayer(self.id))
 
-        root = TwoPlayersGameMonteCarloTreeSearchNode(state=game_state)
+        root = MonteCarloTreeSearchNode(state=game_state)
         mcts = MonteCarloTreeSearch(root)
-        best_node = mcts.best_action(simulations_number=5000)
+        best_node = mcts.getBestAction(simulations_number=5000)
 
         resultado = best_node.state.dados['jogadas'][-1]
 
@@ -49,7 +49,7 @@ class AlogritmoMonteCarloTreeSearch(Algoritmo):
 
         return resultado
 
-class TrucoGameState(TwoPlayersAbstractGameState):
+class TrucoGameState(AbstractGameState):
 
     def __init__(self, state, next_to_move=1, matchPlayer=None):
         self.dados = state
@@ -88,11 +88,6 @@ class TrucoGameState(TwoPlayersAbstractGameState):
 
     @property
     def game_result(self):
-        # check if game is over
-        # 1 = player1
-        # 0 = empate
-        # -1 = player2
-        # None = não definido
         partidaEmpate = False
         empate = False
         self.winner = None
@@ -202,10 +197,10 @@ class TrucoGameState(TwoPlayersAbstractGameState):
         else:
             return 1
 
-    def is_game_over(self):
+    def isGameOver(self):
         return self.game_result is not None
 
-    def move(self, move):
+    def doAction(self, move):
         newState = copy.deepcopy(self.dados)
         newState['jogadas'].append(move.jogada)
 
@@ -215,7 +210,7 @@ class TrucoGameState(TwoPlayersAbstractGameState):
         
         return type(self)(newState, otherPlayer(self.next_to_move), self.matchPlayer)
 
-    def get_legal_actions(self):
+    def getLegalActions(self):
         jogadas = self.dados['jogadas']
         moves = []
 
@@ -235,7 +230,7 @@ class TrucoGameState(TwoPlayersAbstractGameState):
         return moves
 
 
-class TrucoMove(AbstractGameAction):
+class TrucoMove(AbstractAction):
     def __init__(self, jogada):
         jogada['monte_carlo'] = True
         self.jogada = jogada

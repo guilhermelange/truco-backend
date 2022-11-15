@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import json
 from truco import Match
-from randomico import AlgoritmoRandomico
-from monte_carlo import AlogritmoMonteCarloTreeSearch
-from baseline import AlgoritmoBaseline
+from randomico import RandomAlgorithm
+from monte_carlo import MonteCarloTreeSearchAlgorithm
+from baseline import BaselineAlgorithm
 
 app = Flask(__name__)
 CORS(app)
@@ -24,13 +24,13 @@ def runMatch(algorithmA, algorithmB):
 def getAlgorithm(algorithm):
     if algorithm['algorithm'] == 'RANDOM':
         print('RANDOM')
-        return AlgoritmoRandomico(algorithm['id'])
+        return RandomAlgorithm(algorithm['id'])
     elif algorithm['algorithm'] == 'BASELINE':
         print('BASELINE')
-        return AlgoritmoBaseline(algorithm['id'])
+        return BaselineAlgorithm(algorithm['id'])
     else:
         print('MONTECARLO')
-        return AlogritmoMonteCarloTreeSearch(algorithm['id'])
+        return MonteCarloTreeSearchAlgorithm(algorithm['id'])
 
 if __name__ == '__main__':
     app.run()

@@ -1,7 +1,7 @@
-from truco import Algoritmo, Game
+from truco import Algorithm, Game
 
 
-class AlgoritmoBaseline(Algoritmo):
+class BaselineAlgorithm(Algorithm):
 
     #apenas para o autocomplete
     game: Game

@@ -1,9 +1,9 @@
 import random
 import uuid
 from abc import abstractmethod
-import json
 
 realizedMatches = []
+
 
 class Deck:
 
@@ -46,7 +46,7 @@ class Deck:
         return self.num_manilha
 
 
-class Algoritmo:
+class Algorithm:
 
     def __init__(self, id):
         self.hand = []
@@ -85,7 +85,7 @@ class Algoritmo:
 
     def setManilha(self, manilha):
         self.manilha = manilha
- 
+
     def setGame(self, game):
         self.game = game
 
@@ -127,7 +127,7 @@ class Algoritmo:
 
 class Game:
 
-    def __init__(self, algoritmoA: Algoritmo, algoritmoB: Algoritmo):
+    def __init__(self, algoritmoA: Algorithm, algoritmoB: Algorithm):
         self.algoritmoA = algoritmoA
         self.algoritmoB = algoritmoB
         self.deck = Deck()
@@ -165,7 +165,6 @@ class Game:
         self.turn = 0
 
         # realiza as rodadas
-        print('')
         temp = str(uuid.uuid4())[0:8]
         for i in range(3):
             self.turn = i
@@ -178,14 +177,15 @@ class Game:
                 playersRunOrPlay = [False, False]
                 jogadasCard = [None, None]
                 #while (any(playersRunOrPlay) == False):
-                while (playersRunOrPlay[0] == False or playersRunOrPlay[1] == False):
+                while (playersRunOrPlay[0] == False
+                       or playersRunOrPlay[1] == False):
                     self.current_player = algoritmos[0].id
-                    
+
                     jogadaA = algoritmos[0].getJogada()
-                    print('Entrou jogadaA: ' + str(i) + ' - ' + temp + ' - ' + jogadaA['type'] + ' - ' + str(jogadaA['player']))
                     self.jogadas.append(jogadaA)
 
-                    playersRunOrPlay[0] = playersRunOrPlay[0] or (jogadaA['type'] == 'RUN' or jogadaA['type'] == 'PLAY')
+                    playersRunOrPlay[0] = playersRunOrPlay[0] or (
+                        jogadaA['type'] == 'RUN' or jogadaA['type'] == 'PLAY')
                     if jogadaA['type'] == 'RUN':
                         jogadaB = {'player': algoritmos[1].id}
                         run = True
@@ -193,12 +193,11 @@ class Game:
                     elif jogadaA['type'] == 'PLAY':
                         jogadasCard[jogadaA['player']] = jogadaA
 
-
                     self.current_player = algoritmos[1].id
                     jogadaB = algoritmos[1].getJogada(jogadaA)
-                    print('Entrou jogadaB: ' + str(i) + ' - ' + temp + ' - ' + jogadaB['type'] + ' - ' + str(jogadaB['player']))
                     self.jogadas.append(jogadaB)
-                    playersRunOrPlay[1] = playersRunOrPlay[1] or (jogadaB['type'] == 'RUN' or jogadaB['type'] == 'PLAY')
+                    playersRunOrPlay[1] = playersRunOrPlay[1] or (
+                        jogadaB['type'] == 'RUN' or jogadaB['type'] == 'PLAY')
 
                     if jogadaB['type'] == 'RUN':
                         run = True
@@ -209,11 +208,14 @@ class Game:
                 # No proximo turno, quem joga é quem ganhou o último
                 if not (run):
                     # Verifica empaxe e lança evento; (TEMOS CARTAS AQUI)
-                    empate[i] = self.cardEquals(jogadasCard[jogadaA['player']]['card'], jogadasCard[jogadaB['player']]['card'])
+                    empate[i] = self.cardEquals(
+                        jogadasCard[jogadaA['player']]['card'],
+                        jogadasCard[jogadaB['player']]['card'])
                     if empate[i]:
                         self.jogadas.append({'type': 'TIE'})
                         pass
-                    elif self.cardWins(jogadasCard[jogadaA['player']]['card'], jogadasCard[jogadaB['player']]['card']):
+                    elif self.cardWins(jogadasCard[jogadaA['player']]['card'],
+                                       jogadasCard[jogadaB['player']]['card']):
                         self.win_counts.append(jogadaA['player'])
                     else:
                         self.win_counts.append(jogadaB['player'])
@@ -329,7 +331,7 @@ class Game:
 
 class Match:
 
-    def __init__(self, algoritmoA: Algoritmo, algoritmoB: Algoritmo):
+    def __init__(self, algoritmoA: Algorithm, algoritmoB: Algorithm):
         self.algoritmoA = algoritmoA
         self.algoritmoB = algoritmoB
 
