@@ -116,6 +116,8 @@ class TwoPlayersGameMonteCarloTreeSearchNode(MonteCarloTreeSearchNode):
 
     def backpropagate(self, result):
         # print('session.match_points: ' + str(session.match_points))
+        #print('session.match_points: ' + str(session.match_points))
+        #print(result)
         self._number_of_visits += 1.
         self._results[result] += session.match_points
         if self.parent:

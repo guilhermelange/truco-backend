@@ -154,8 +154,7 @@ class Game:
         self.jogadas = []
 
     # Joga um game, constituido de 3 rodadas1
-    def play(self):
-        turn = random.randint(0, 1)
+    def play(self, turn):
         run = False
         win_counts = []
         empate = [False, False, False]
@@ -288,7 +287,7 @@ class Game:
 
         self.totalPoints = win_points
 
-        return self.jogadas
+        return self.jogadas, turn
 
     # Verica se a carta A ganha da carta B
     def cardWins(self, cartaA, cartaB):
@@ -335,13 +334,14 @@ class Match:
         pointsA = 0
         pointsB = 0
         matches = []
+        currentTurn = random.randint(0, 1)
 
         while (pointsA < 12 and pointsB < 12):
             # DESCOMENTAR DEPOIS
             game = Game(self.algoritmoA, self.algoritmoB)
             handA = game.handA.copy()
             handB = game.handB.copy()
-            jogadas = game.play()
+            jogadas, currentTurn = game.play(currentTurn)
             totalPoints = totalPoints + game.totalPoints
             mtch = {
                 'joker': game.manilha,
