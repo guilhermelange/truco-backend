@@ -38,7 +38,7 @@ class MonteCarloTreeSearch(object):
         else :
             for _ in range(0, simulations_number):            
                 v = self._tree_policy()
-                reward = v.rollout()
+                reward = v.rollout() # -1 = Player 1 = 1 = Player
                 v.backpropagate(reward)
         # to select best child go for exploitation only
         return self.root.best_child(c_param=0.)

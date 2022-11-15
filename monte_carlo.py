@@ -223,7 +223,6 @@ class TrucoGameState(TwoPlayersAbstractGameState):
     def get_legal_actions(self):
         jogadas = self.dados['jogadas']
         moves = []
-        turnoPar = len(jogadas) % 2 == 0
 
         if len(jogadas) > 0 and jogadas[-1]['type'] == 'TRUCO':
             moves.append(TrucoMove({"type": "ACCEPT", "player": self.next_to_move}))
