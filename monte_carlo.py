@@ -35,7 +35,7 @@ class AlogritmoMonteCarloTreeSearch(Algoritmo):
 
         root = TwoPlayersGameMonteCarloTreeSearchNode(state=game_state)
         mcts = MonteCarloTreeSearch(root)
-        best_node = mcts.best_action(simulations_number=1000)
+        best_node = mcts.best_action(simulations_number=100)
 
         resultado = best_node.state.dados['jogadas'][-1]
 
