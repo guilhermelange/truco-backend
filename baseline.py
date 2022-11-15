@@ -47,5 +47,5 @@ class AlgoritmoBaseline(Algoritmo):
             if int(cartas[0].split('_')[0]) >= 1 and self.hasManilha() and self.isTrucoPermited():
                 return self.truco()
 
-        return self.play(cartas.pop())
+        return self.play(self.popCarta(cartas.pop()))
 

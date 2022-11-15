@@ -28,11 +28,8 @@ class AlogritmoMonteCarloTreeSearch(Algoritmo):
         state = {
             'jogadas': rodadaJogadas,
             'cartas': cartas,
-            'manilha': self.manilha
+            'manilha': self.game.num_manilha
         }
-        clear = "\n" * 100
-        print(clear)
-        print(state)
         
         game_state = TrucoGameState(state, next_to_move=self.id)
 
@@ -113,7 +110,6 @@ class TrucoGameState(TwoPlayersAbstractGameState):
                 if jogada['type'] == 'PLAY':
                     self.plays_count += 1
                     empate = False
-                    # print(jogada['player'])
                     user_jogadas[jogada['player']] = jogada
                 elif jogada['type'] == 'RUN':
                     empate = False
@@ -133,9 +129,7 @@ class TrucoGameState(TwoPlayersAbstractGameState):
 
                 if self.plays_count == 2:
                     self.plays_count = 0
-                    # print('user_jogadas:')
-                    # print(user_jogadas)
-
+                    
                     # if user_jogadas[0] == 0 or user_jogadas[1] == 0:
                     #     pass
 

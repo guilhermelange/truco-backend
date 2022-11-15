@@ -63,7 +63,7 @@ class MonteCarloTreeSearchNode(ABC):
             for c in self.children
         ]
         # print('choices_weights: ' + str(len(self.children)))
-        print(choices_weights)
+        # print(choices_weights)
         return self.children[np.argmax(choices_weights)]
 
     def rollout_policy(self, possible_moves):
