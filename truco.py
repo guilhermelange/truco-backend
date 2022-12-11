@@ -1,6 +1,7 @@
 import random
 import uuid
 from abc import abstractmethod
+import copy
 
 realizedMatches = []
 
@@ -127,10 +128,13 @@ class Algorithm:
 
 class Game:
 
-    def __init__(self, algoritmoA: Algorithm, algoritmoB: Algorithm):
+    def __init__(self, algoritmoA: Algorithm, algoritmoB: Algorithm, default_deck):
         self.algoritmoA = algoritmoA
         self.algoritmoB = algoritmoB
-        self.deck = Deck()
+        if default_deck == None:
+            self.deck = Deck()
+        else:
+            self.deck = default_deck
 
         self.handA = self.deck.getMao()
         self.handB = self.deck.getMao()
@@ -331,9 +335,10 @@ class Game:
 
 class Match:
 
-    def __init__(self, algoritmoA: Algorithm, algoritmoB: Algorithm):
+    def __init__(self, algoritmoA: Algorithm, algoritmoB: Algorithm, deck_cache: any):
         self.algoritmoA = algoritmoA
         self.algoritmoB = algoritmoB
+        self.deck_cache = deck_cache
 
     # Joga uma partida, realizando games até que alguem atinja a pontuação final de 12 pontos
     def playMatch(self):
@@ -345,7 +350,11 @@ class Match:
 
         while (pointsA < 12 and pointsB < 12):
             # DESCOMENTAR DEPOIS
-            game = Game(self.algoritmoA, self.algoritmoB)
+            if len(self.deck_cache) > 0:
+                game = Game(self.algoritmoA, self.algoritmoB, copy.deepcopy(self.deck_cache[len(matches)]))
+            else:
+                game = Game(self.algoritmoA, self.algoritmoB, None)
+
             handA = game.handA.copy()
             handB = game.handB.copy()
             jogadas, currentTurn = game.play(currentTurn)
