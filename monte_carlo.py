@@ -28,7 +28,7 @@ class MonteCarloTreeSearchAlgorithm(Algorithm):
         cartas = [{},{}]
         cartas[self.id] = self.hand
         cartas[otherPlayer(self.id)] = self.handAdversario
-
+        
         rodadaJogadas = [jogada for jogada in self.game.jogadas if jogada['type'] != 'TIE']
         state = {
             'jogadas': rodadaJogadas,
@@ -116,6 +116,7 @@ class TrucoGameState(AbstractGameState):
                 elif jogada['type'] == 'RUN':
                     empate = False
                     self.winner = varOtherPlayer
+                    #print('Passo1: ' +  str(type(self.winner)))
                     break
                 elif jogada['type'] == 'TRUCO':
                     self.player_truco = jogada['player']
@@ -137,10 +138,10 @@ class TrucoGameState(AbstractGameState):
                         self.jogadas_empate[rodada] = True
                     elif self.cardWins(user_jogadas[player]['card'], user_jogadas[varOtherPlayer]['card']):
                         win_count[player] += 1
-                        win_counts.append(user_jogadas[player])
+                        win_counts.append(user_jogadas[player]['player'])
                     else:
                         win_count[varOtherPlayer] += 1
-                        win_counts.append(user_jogadas[varOtherPlayer])
+                        win_counts.append(user_jogadas[varOtherPlayer]['player'])
 
                     user_jogadas = [0, 0]
                     rodada += 1
@@ -148,26 +149,32 @@ class TrucoGameState(AbstractGameState):
         rodada -= 1
         if player != None and win_count[player] >= 2:
             self.winner = player
+            #print('Passo2: ' +  str(type(self.winner)))
         elif varOtherPlayer != None and win_count[varOtherPlayer] >= 2:
             self.winner = varOtherPlayer
+            #print('Passo3: ' +  str(type(self.winner)))
 
         if self.winner == None:
             # Verifica empate
             if self.jogadas_empate == [True, False, False]:
                 if rodada == 1 and len(win_counts) > 0:
                     self.winner = win_counts[-1]
+                    #print('Passo4: ' +  str(type(self.winner)))
 
             elif self.jogadas_empate == [False, True, False]:
                 if rodada == 1  and len(win_counts) > 0:
                     self.winner = win_counts[0]
+                    #print('Passo5: ' + str(type(self.winner)))
 
             elif self.jogadas_empate == [True, True, False]:
                 if rodada == 2  and len(win_counts) > 0:
                     self.winner = win_counts[-1]
+                    #print('Passo6: ' + str(type(self.winner)))
 
             elif self.jogadas_empate == [False, False, True]:
                 if rodada == 2  and len(win_counts) > 0:
                     self.winner = win_counts[0]
+                    #print('Passo7: ' + str(type(self.winner)))
 
             elif self.jogadas_empate == [True, True, True]:
                 partidaEmpate = True
@@ -192,6 +199,9 @@ class TrucoGameState(AbstractGameState):
 
         session.update_match_points(currentMatchPoints)
 
+        #print('Winner: ' + str(self.winner))
+        #print(' ')
+        #print(' ')
         if self.winner == 0:
             return -1
         else:
@@ -221,11 +231,11 @@ class TrucoGameState(AbstractGameState):
             for carta in self.dados['cartas'][self.next_to_move]:
                 moves.append(TrucoMove({"type": "PLAY", "card": carta, "player": self.next_to_move}))
 
-            if len(jogadas) > 0 and jogadas[-1]['player'] != self.next_to_move:
-                if self.player_truco == None:
-                    moves.append(TrucoMove({"type": "TRUCO", "player": self.next_to_move}))
-                elif self.player_truco != self.next_to_move:
-                    moves.append(TrucoMove({"type": "TRUCO", "player": self.next_to_move}))
+            # if len(jogadas) > 0 and jogadas[-1]['player'] != self.next_to_move:
+            #     if self.player_truco == None:
+            #         moves.append(TrucoMove({"type": "TRUCO", "player": self.next_to_move}))
+            #     elif self.player_truco != self.next_to_move:
+            #         moves.append(TrucoMove({"type": "TRUCO", "player": self.next_to_move}))
 
         return moves
 
